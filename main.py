@@ -1,4 +1,5 @@
 from flask import Flask, request, g
+from datetime import datetime
 import sqlite3
 
 
@@ -10,7 +11,7 @@ def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
-        db.cursor().execute("CREATE TABLE IF NOT EXISTS module_loads (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, module TEXT, jid INTEGER);")
+        db.cursor().execute("CREATE TABLE IF NOT EXISTS module_loads (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, module TEXT, datetime DATETIME);")
         db.commit()
     return db
 
@@ -30,15 +31,15 @@ def log():
     print(content)
     username = content['username']
     module = content['module']
-    jid = content['jid']
+    dt = datetime.now()
 
     data = {
         "username": username,
         "module": module,
-        "jid": jid
+        "dt": dt
     }
 
-    get_cursor().execute("INSERT INTO module_loads (username, module, jid) VALUES (:username, :module, :jid)", data)
+    get_cursor().execute("INSERT INTO module_loads (username, module, datetime) VALUES (:username, :module, :dt)", data)
     get_db().commit()
 
-    return F"{username} is loading {module} from job {jid}\n"
+    return F"{username} is loading {module} at {dt}\n"
