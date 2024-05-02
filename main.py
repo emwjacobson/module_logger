@@ -16,7 +16,7 @@ def get_db():
                 line = line.strip()
                 key, value = line.split("=")
                 db_data[key] = value
-        db = g._database = psycopg.connect(F"host={db_data["DB_HOST"]} dbname={db_data["DB_NAME"]} user={db_data["DB_USER"]} password={db_data["DB_PASSWORD"]}")
+        db = g._database = psycopg.connect(F"host={db_data['DB_HOST']} dbname={db_data['DB_NAME']} user={db_data['DB_USER']} password={db_data['DB_PASSWORD']}")
         db.cursor().execute("CREATE TABLE IF NOT EXISTS module_loads (id SERIAL PRIMARY KEY, username TEXT, module TEXT, jid INTEGER, datetime TIMESTAMP);")
         db.commit()
     return db
