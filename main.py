@@ -34,11 +34,14 @@ def close_connection(exception):
 @app.route("/log", methods = ["POST"])
 def log():
     content = request.json
-    print(content)
     username = content['username']
     module = content['module']
-    jid = content['jid']
     dt = datetime.now()
+    if content['jid'] == "":
+        app.logger.warning(F"Got invalid Slurm Job ID from {username} loading {module} at {dt} \n")
+        jid = -1
+    else:
+        jid = content['jid']
 
     data = {
         "username": username,
